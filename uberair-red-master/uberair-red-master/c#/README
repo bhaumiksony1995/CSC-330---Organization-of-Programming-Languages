@@ -1,0 +1,64 @@
+Programmers: Caleb Holt, Andrew McBryde, Hannah Gulle, Jay Hinson, 
+Vincent Raymomd, & Bhaumik Sony
+Date: 12-8-2017
+CSC 330 - Group Project: Flight Planner
+
+The top level README for including instructions on how to compile and excecute 
+the program on cobra.
+
+For the C# program: FlightPlanner.cs
+Compilation: mcs FlightPlanner.cs
+Execution: mono FlightPlanner.exe
+
+SUMMARY
+A small airline builds small connecting flights between cities. With an airplane
+that can only hold 10 passengers, its daily flight plan must be optimized. Given
+a list of possible passengers with an origin and destination, the program 
+utilizes Dijkstra's algorithm to find the most profitable combination of
+passengers for the most optimal route.
+
+CONSTRAINTS
+- The first flight of the day occurs at 6:00.
+- The last flight of the day must be on the ground by 21:00.
+- Unlisted runways are assumed to be closed for the day.
+- The average speed of the airplane is 515 mph.
+- For cities with multiple zipcodes, an average of the geographical coordinates
+for each zipcode will be used.
+- Minimum runway length is 3000 feet.
+- Runways must be either concrete or turf.
+- A runway must be lit after 19:00 to land.
+- Refueling takes 15 minutes in addition to landing.
+- The closest airport to a passenger's origination and destination city shall
+be used en-route.
+- The plane can hold a maximum of 10 passengers.
+- Must account for daylight savings time.
+- Must account for differences in time zones.
+
+COMPILATION
+	mcs main.cs Learjet.cs
+	
+POSSIBLE OBJECTS
+
+
+BASIC ALGORITHM
+
+
+EXCEPTION HANDLING
+
+
+
+INPUT
+
+
+OUTPUT
+City First Name
+Departure Time
+Names of Passengers Boarding
+Origination Cities of Boarding Passengers
+
+
+RESOURCES:
+http://theochem.mercer.edu/csc330/data/zip_codes_states.csv
+http://theochem.mercer.edu/csc330/data/airports.csv
+http://theochem.mercer.edu/csc330/data/runways.csv
+

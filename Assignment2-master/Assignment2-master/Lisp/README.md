@@ -1,0 +1,1 @@
+COMPILE & RUN: ./LDiffusion.lisp

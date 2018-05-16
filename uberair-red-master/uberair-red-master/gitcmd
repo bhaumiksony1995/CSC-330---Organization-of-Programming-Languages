@@ -1,0 +1,9 @@
+git checkout -b branchName 
+// checkout and make a new local branch
+
+git push origin branchName
+// pushes and creates a remote copy of the local branch
+
+git branch -a
+// shows all remote and local branches for a project
+

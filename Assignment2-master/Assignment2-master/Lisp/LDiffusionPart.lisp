@@ -1,0 +1,128 @@
+#!/usr/bin/sbcl --script
+
+(defvar cube)
+(defvar maxsize 0.d0)
+(defvar part)
+
+(write-line "Input cube size ")
+(setf maxsize (read)) ;reads in maxsize
+
+(write-line "Do you want to add a partition? (1 = Yes / 2 = No")
+(setf part (read)) ;reads in if they want a partition or not
+
+(setf cube(make-array (list maxsize maxsize maxsize)))
+
+(defvar diffusion_coefficient 0.175)
+(defvar room_dimension 5.0)
+(defvar speed_of_gas_molecules 250.0)
+(defvar timestep (/ room_dimension speed_of_gas_molecules maxsize))
+(defvar distance_between_blocks (/ room_dimension maxsize))
+(defvar DTerm (/ (* diffusion_coefficient timestep)(* distance_between_blocks distance_between_blocks)))
+(defvar sumval 0.0)
+(defvar MyRatio 0.0)
+(defvar change 0.0)
+(defvar maxval 0.0)
+(defvar minval 0.0)
+(defvar MyTime 0.0)
+(defvar partsize)
+(setf partsize (/ maxsize 2))
+
+(if(eq part 1)
+(progn
+(dotimes (i maxsize)
+    (dotimes (j maxsize)
+        (dotimes (k maxsize)
+            (if (and (eq i (- partsize 1)) (>= j (- partsize 1)))
+              (progn
+                        (setf (aref cube i j k) -1.0)
+                    )
+                    )
+                )
+            )
+        )
+    )
+    )
+
+(setf (aref cube 0 0 0) (* 1(expt 10 21)))
+
+(loop while (<= MyRatio 0.99) do
+      (dotimes (i maxsize)
+        (dotimes (j maxsize)
+          (dotimes (k maxsize)
+            (if (>= (aref cube i j k) 0)
+            (progn
+                (if (and (/= i 0) (>= (aref cube (- i 1) j k) 0))
+                (progn
+                    (setf change (* DTerm(- (aref cube i j k)(aref cube (- i 1) j k))))
+                    (setf (aref cube i j k)(- (aref cube i j k)change))
+                    (setf (aref cube (- i 1) j k)(+ (aref cube (- i 1) j k)change))
+                    )
+                    )
+                (if (and (/= j 0) (>= (aref cube i (- j 1) k) 0))
+                (progn
+                    (setf change (* DTerm(- (aref cube i j k)(aref cube i (- j 1) k))))
+                    (setf (aref cube i j k)(- (aref cube i j k)change))
+                    (setf (aref cube i (- j 1) k)(+ (aref cube i (- j 1) k)change))
+                    )
+                    )
+                (if (and (/= k 0)(>= (aref cube i j (- k 1)) 0))
+                (progn
+                    (setf change (* DTerm(- (aref cube i j k)(aref cube i j (- k 1)))))
+                    (setf (aref cube i j k)(- (aref cube i j k)change))
+                    (setf (aref cube i j (- k 1))(+ (aref cube i j (- k 1))change))
+                    )
+                    )
+                (if (and (/= i (- maxsize 1.0))(>= (aref cube (+ i 1) j k) 0))
+                (progn
+                    (setf change (* DTerm(- (aref cube i j k)(aref cube (+ i 1) j k))))
+                    (setf (aref cube i j k)(- (aref cube i j k)change))
+                    (setf (aref cube (+ i 1) j k)(+ (aref cube (+ i 1) j k)change))
+                    )
+                    )
+                (if (and (/= j (- maxsize 1.0))(>= (aref cube i (+ j 1) k) 0))
+                (progn
+                    (setf change (* DTerm(- (aref cube i j k)(aref cube i (+ j 1) k))))
+                    (setf (aref cube i j k)(- (aref cube i j k)change))
+                    (setf (aref cube i (+ j 1) k)(+ (aref cube i (+ j 1) k)change))
+                    )
+                    )
+                (if (and (/= k (- maxsize 1.0))(>= (aref cube i j (+ k 1)) 0))
+                (progn
+                    (setf change (* DTerm(- (aref cube i j k)(aref cube i j (+ k 1)))))
+                    (setf (aref cube i j k)(- (aref cube i j k)change))
+                    (setf (aref cube i j (+ k 1))(+ (aref cube i j (+ k 1))change))
+                    )
+                    )
+            )
+            )
+            )
+          )
+        )
+    (setf MyTime (+ MyTime timestep))
+    (setf sumval 0.0)
+    (setf maxval (aref cube 0 0 0) )
+    (setf minval (aref cube 0 0 0) )
+    
+    (dotimes (i maxsize)
+      (dotimes (j maxsize)
+        (dotimes (k maxsize)
+            (if(>= (aref cube i j k) 0)
+             (progn
+                (setf maxval (max maxval (aref cube i j k)))
+                (setf minval (min minval (aref cube i j k)))
+                (setf sumval (+ sumval (aref cube i j k)))
+                )
+                )
+          )
+        )
+      )
+;    (format t "maxval ~,2d ~%" maxval)
+;    (format t "minval ~,2d ~%" minval)
+    (setf MyRatio (/ minval maxval) )
+
+;    (format t "~%Time: ~,2d      Ratio: ~,2d      Index: ~,2d" MyTime MyRatio (aref cube 0 0 0))
+;    (format t "      Cube: ~,2d" (aref cube (- maxsize 1)(- maxsize 1)(- maxsize 1)))
+;    (format t "      Sum ~,2d~%" sumval)
+)
+(format t "Check for mass consistency (should be 1e21): ~,2d ~%" sumval)
+(format t "Box equalibrated in ~,,2d seconds of simulation time. ~%" MyTime)
